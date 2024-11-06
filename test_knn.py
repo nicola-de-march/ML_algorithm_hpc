@@ -1,4 +1,4 @@
-from KNNClassifier1 import KNNClassifier
+from KNNClassifier import KNNClassifier
 import numpy as np
 from mpi4py import MPI
 
