@@ -20,16 +20,15 @@ class KNNClassifier:
         size = comm.Get_size()
 
         samples = X.shape[0]
-        chunks = math.ceil(samples / size)
-        extra_samples = samples % chunks  # extra samples dim
-        #print(f"samples: {samples}, chunk dimension: {chunks}, extra_samples: {extra_samples}")
+        chunks = samples // size
+        extra_samples = samples - chunks*(size - 1)  # extra samples dim
+
         if extra_samples == 0:
             local_X = np.array_split(X, size)[rank]
-            local_y_pred = np.array([self._predict(x) for x in local_X])
+            local_y_pred = np.array([self._predict(x) for x in local_X], dtype=int)
             y_pred = None
             if rank == 0:
-                y_pred = np.empty(len(X), dtype=int)
-            print(f"Rank {rank}: Local predictions: {local_y_pred}")
+                y_pred = np.empty(samples, dtype=int)
             comm.Gather(local_y_pred, y_pred, root=0)
             return y_pred if rank == 0 else None
         else:
@@ -40,26 +39,17 @@ class KNNClassifier:
 
             start_index = rank * chunks 
             end_index = start_index + local_samples
+
             local_X = X[start_index:end_index]
             local_y_pred = np.array([self._predict(x) for x in local_X], dtype=int)
 
             counts = [chunks if i < size - 1 else extra_samples for i in range(size)] 
-            displacement = []
-            # for i in range(size):
-            #     if i == 7:
-                    
-            #     displacement[i] = i * chunks
             if rank == 0:
                 y_pred = np.empty(samples, dtype=int)
-                print(displacement)
-                
             else:
                 y_pred = None
                 counts = None
-            # print(local_y_pred)
-            print(f"Rank {rank}: Local predictions: {local_y_pred}")
-            comm.Gatherv(sendbuf=local_y_pred, recvbuf=[y_pred, counts], root=0)
-
+            comm.Gatherv(sendbuf=local_y_pred, recvbuf=(y_pred, counts), root=0)
             return y_pred if rank == 0 else None
 
     def _predict(self, x):
@@ -68,3 +58,6 @@ class KNNClassifier:
         k_nearest_labels = [self.y_train[i] for i in k_indices]
         most_common = np.bincount(k_nearest_labels).argmax()
         return most_common
+
+
+
