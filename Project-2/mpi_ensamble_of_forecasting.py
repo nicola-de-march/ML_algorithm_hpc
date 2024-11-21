@@ -1,10 +1,9 @@
 from mpi4py import MPI
-import jax # For installation: pip3 install jax, pip3 install jaxlib
+import jax
 import jax.numpy as jnp
+import numpy as np
 
 def forecast_1step(X:jnp.array, W:jnp.array, b:jnp.array)->jnp.array:
-    # JAX does not support in-place operations like numpy, so use jax.numpy and functional updates.
-    # X = X.copy()  # Copy the input data to avoid modifying the original data
     X_flatten = X.flatten()
     y_next = jnp.dot(W, X_flatten) + b
     return y_next
@@ -12,22 +11,14 @@ def forecast_1step(X:jnp.array, W:jnp.array, b:jnp.array)->jnp.array:
 def forecast(horizon:int, X:jnp.array, W:jnp.array, b:jnp.array)->jnp.array:
     result = []
 
-    # Loop over 'horizon' to predict future values
     for t in range(horizon):
-        X_flatten = X.flatten()  # Flatten the window for dot product
-
-        # Get the next prediction
+        X_flatten = X.flatten()
         y_next = forecast_1step(X_flatten, W, b)
-
-        # Update X by shifting rows and adding the new prediction in the last row
-        X = jnp.roll(X, shift=-1, axis=0)  # Shift rows to the left
-        X = X.at[-1].set(y_next)  # Update the last row with the new prediction
-
-        # Append the prediction to results
+        X = jnp.roll(X, shift=-1, axis=0)
+        X = X.at[-1].set(y_next)
         result.append(y_next)
 
     return jnp.array(result)
-
 
 def forecast_1step_with_loss(params:tuple, X:jnp.array, y:jnp.array)->float:
     W, b = params
@@ -44,7 +35,6 @@ def training_loop(grad:callable, num_epochs:int, W:jnp.array, b:jnp.array, X:jnp
     return W, b
 
 def main():
-    # Initialize MPI
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
@@ -52,44 +42,61 @@ def main():
     if rank == 0:
         print("MPI size:", size)
         print("Creation of dataset and model parameters")
-        X = jnp.array([[0.1, 0.4], [0.1, 0.5], [0.1, 0.6]])  # input example
-        y = jnp.array([[0.1, 0.7]])  # expected output
-        W = jnp.array([[0., 1., 0., 1., 0., 1.], [0., 1., 0, 1., 0., 1.]])  # random neural network parameters
-        b = jnp.array([0.1])  # random neural network bias
+        X = jnp.array([[0.1, 0.4], [0.1, 0.5], [0.1, 0.6]])
+        y = jnp.array([[0.1, 0.7]])
+        W = jnp.array([[0., 1., 0., 1., 0., 1.], [0., 1., 0, 1., 0., 1.]])
+        b = jnp.array([0.1])
 
-    # Scatter the data to all processes
     if rank == 0:
         data = (X, y, W, b)
     else:
         data = None
 
     data = comm.bcast(data, root=0)
-
     X, y, W, b = data
 
-    # Define the parameters
     num_epochs = 1000
     horizon = 10
-    num_forecaster = 2 # <---- TODO: scale the number as you wish
-    noise_std = 0.1 # the training needs to have different initial conditions for producing different predictions
+    num_forecaster = 10
+    noise_std = 0.1
 
-    # Each process will have its own forecaster
-    key = jax.random.PRNGKey(rank)  # Use rank as the random seed
-    W_noise = jax.random.normal(key, W.shape) * noise_std
-    b_noise = jax.random.normal(key, b.shape) * noise_std
+    forecast_per_processor = num_forecaster // size
+    residual_forecaster = num_forecaster % size
+    if rank == 0:
+        counts = [forecast_per_processor * horizon * X.shape[1]for _ in range(size)]
+        counts[0] += residual_forecaster * horizon * X.shape[1]
+        displacements = np.cumsum([0] + counts[:-1])
+    else:
+        counts = None
+        displacements = None
 
-    W_init = W + W_noise
-    b_init = b + b_noise
+    partial_prediction = []
 
-    # Train the model
-    W_trained, b_trained = training_loop(grad, 20, W_init, b_init, X, y)
-    y_predicted = forecast(horizon, X, W_trained, b_trained)
+    for forecaster in range(forecast_per_processor + (1 if rank == 0 and residual_forecaster > 0 else 0)):
+        key = jax.random.PRNGKey(rank)
+        W_noise = jax.random.normal(key, W.shape) * noise_std
+        b_noise = jax.random.normal(key, b.shape) * noise_std
 
-    # Gather the predictions from all processes
-    aggregated_forecasting = comm.gather(y_predicted, root=0)
+        W_init = W + W_noise
+        b_init = b + b_noise
+
+        W_trained, b_trained = training_loop(grad, 20, W_init, b_init, X, y)
+        y_predicted_local = forecast(horizon, X, W_trained, b_trained)
+        partial_prediction.append(y_predicted_local.flatten())
+
+    partial_prediction_np = np.array(partial_prediction)
 
     if rank == 0:
-      print("Forecasted values:", aggregated_forecasting)
+        y_pred = np.empty((num_forecaster * horizon * X.shape[1],), dtype=np.float32)
+    else:
+        y_pred = None
+    
+    comm.Gatherv(sendbuf=partial_prediction_np, recvbuf=(y_pred, counts, displacements, MPI.FLOAT), root=0)
+
+    if rank == 0:
+        # y_pred = y_pred.reshape((num_forecaster, horizon))
+        # print("Forecasted values:", y_pred)
+        print("size of forecasted values:", y_pred.shape)
 
 if __name__ == "__main__":
     main()

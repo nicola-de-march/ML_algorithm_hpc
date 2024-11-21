@@ -1,0 +1,29 @@
+conda create --name jax_env python=3.9
+conda activate jax_env
+pip install -U "jax[cuda12]"
+conda install mpi4py
+
+# interactive jobs on gpu
+si-gpu -G 1 -c 7
+
+# ------------------------------
+Running script
+
+# Creazione dell'environment 
+# entra nel nodo
+module load lang/Anaconda3/2020.11
+conda create -n ml_project python=3.9
+conda activate ml_project
+pip install jax
+module load mpi/OpenMPI
+conda install mpi4py
+
+#TODO
+notebook con i tempi
+README con la spiegazione dei file
+provare con gpu
+
+Mandare a Giorgio istruzioni per usare CUDA (Lattice e ML)
+module load lib/UCX/1.9.0-GCCcore-10.2.0-CUDA-11.1.1
+
+
