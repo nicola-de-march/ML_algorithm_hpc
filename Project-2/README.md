@@ -1,0 +1,50 @@
+# Ensemble of Forecasters
+For the second project of the course we dealt with an ensemle of forecasters.
+
+Starting from the serial implementation of the code contained in [ensamble_of_forecasting.py](./ensamble_of_forecasting.py), 
+we slightly modified it and we implemented an MPI version [mpi_ensamble_of_forecasting.py](./mpi_ensamble_of_forecasting.py).
+
+In the MPI version, each process manages a portion of forecasters fed with random paramenters generated according to its rank.
+
+Then, at the end, RANK 0 performs a GatherV operations to collect the results of each process.
+
+To compare the perfomance of the two approaches, we executed the implementations for 128, 256, 512, 1024 Forecasters and we collected the time statitics in two CSV files
+([results_serial_Forecaster.csv](./results_serial_Forecaster.csv)), ([results_128MPI_Forecaster.csv](./results_128MPI_Forecaster.csv)) ; 
+for the MPI version we used 128 processes.
+
+The notebook ([time_stats.ipynb](./time_stats.ipynb))contains the graph with the performance comparison; we can see that while the serial version grow linearly with the number of Forecasters, the execution time 
+for the MPI version using 128 processes remains under control.
+
+
+## How to execute on AION-cluster
+1) Allocate a CPU node
+```bash
+si -t 30 --nodes 1 --ntasks-per-node 128 --cpus-per-task 1
+```
+
+2) Activate the enviroment (If already existing, otherwise create it)
+```bash
+micromamba activate ds
+```
+
+3) Install and load the necessary tools
+```bash
+pip install jax
+module load mpi/OpenMPI
+```
+
+4) Execute the code
+
+Serial version
+```bash
+python ensamble_of_forecasting.py
+```
+MPI version
+```bash
+mpiexec -n 128 python mpi_ensamble_of_forecasting.py
+```
+
+
+## Contributors
+- Nicola De March
+- Giorgio Bettonte
