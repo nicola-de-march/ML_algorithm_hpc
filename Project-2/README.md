@@ -1,19 +1,15 @@
 # Ensemble of Forecasters
-For the second project of the course we dealt with an ensemle of forecasters.
+For the second project of the course, we dealt with an ensemble of forecasters.
 
-Starting from the serial implementation of the code contained in [ensamble_of_forecasting.py](./ensamble_of_forecasting.py), 
-we slightly modified it and we implemented an MPI version [mpi_ensamble_of_forecasting.py](./mpi_ensamble_of_forecasting.py).
+Starting from the serial implementation of the code contained in ensamble_of_forecasting.py, we slightly modified it and implemented an MPI version: mpi_ensamble_of_forecasting.py.
 
-In the MPI version, each process manages a portion of forecasters fed with random paramenters generated according to its rank.
+In the MPI version, each process manages a portion of forecasters fed with random parameters generated according to its rank.
 
-Then, at the end, RANK 0 performs a GatherV operations to collect the results of each process.
+At the end, RANK 0 performs a GatherV operation to collect the results of each process.
 
-To compare the perfomance of the two approaches, we executed the implementations for 128, 256, 512, 1024 Forecasters and we collected the time statitics in two CSV files
-([results_serial_Forecaster.csv](./results_serial_Forecaster.csv)), ([results_128MPI_Forecaster.csv](./results_128MPI_Forecaster.csv)) ; 
-for the MPI version we used 128 processes.
+To compare the performance of the two approaches, we executed the implementations for 128, 256, 512, and 1024 forecasters and collected the time statistics in two CSV files: (results_serial_Forecaster.csv), (results_128MPI_Forecaster.csv). For the MPI version, we used 128 processes.
 
-The notebook ([time_stats.ipynb](./time_stats.ipynb))contains the graph with the performance comparison; we can see that while the serial version grow linearly with the number of Forecasters, the execution time 
-for the MPI version using 128 processes remains under control.
+The notebook (time_stats.ipynb) contains the graph with the performance comparison. We can see that while the serial version grows linearly with the number of forecasters, the execution time for the MPI version using 128 processes remains under control.
 
 
 ## How to execute on AION-cluster
@@ -22,7 +18,7 @@ for the MPI version using 128 processes remains under control.
 si -t 30 --nodes 1 --ntasks-per-node 128 --cpus-per-task 1
 ```
 
-2) Activate the enviroment (If already existing, otherwise create it)
+2) Activate the environment (If already existing, otherwise create it)
 ```bash
 micromamba activate ds
 ```
