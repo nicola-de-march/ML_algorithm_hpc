@@ -27,6 +27,7 @@ micromamba activate ds
 ```bash
 pip install jax
 module load mpi/OpenMPI
+pip install mpi4py
 ```
 
 4) Execute the code
