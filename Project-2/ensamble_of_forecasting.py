@@ -1,6 +1,7 @@
 import jax 
 import jax.numpy as jnp
-
+import time
+import csv
 X = jnp.array([[0.1, 0.4], [0.1, 0.5], [0.1, 0.6]])  # input example
 y = jnp.array([[0.1, 0.7]])  # expected output
 W = jnp.array([[0., 1., 0., 1., 0., 1.], [0., 1., 0, 1., 0., 1.]])  # random neural network parameters
@@ -58,10 +59,11 @@ def training_loop(grad:callable, num_epochs:int, W:jnp.array, b:jnp.array, X:jnp
 # Ensemble of forecasters #
 ###########################
 
-num_forecaster = 3 # <---- TODO: scale the number as you wish
+num_forecaster = 1024 # <---- TODO: scale the number as you wish
 noise_std = 0.1 # the training needs to have different initial conditions for producing different predictions
 
 aggregated_forecasting=[]
+start_time = time.time()
 for i in range(num_forecaster): # <------------  TODO: use HPC to manage 'many' forecasters (e.g., 500)
     key = jax.random.PRNGKey(i)  # `i` random seed
     W_noise = jax.random.normal(key, W.shape) * noise_std
@@ -74,7 +76,16 @@ for i in range(num_forecaster): # <------------  TODO: use HPC to manage 'many' 
     y_predicted = forecast(5, X, W_trained, b_trained)
 
     aggregated_forecasting.append(y_predicted)
+end_time = time.time()
+elapsed_time = end_time - start_time
+print(f"Total time: {elapsed_time}  seconds")
 
-print(f"Predictions: ", aggregated_forecasting)
+#write time statistics on a CSV file
+#with open("results_serial_Forecaster.csv", mode="a", newline="") as file:
+#    writer = csv.writer(file)
+#    writer.writerow(["Number_of_Forecasters", "Execution Time (s)"])
+#    writer.writerow([num_forecaster, elapsed_time])
+
+#print(f"Predictions: ", aggregated_forecasting)
 
 # TODO some statistics as you wish. Example: 5th and 95th percentile, mediane, mean, standard deviation, ...

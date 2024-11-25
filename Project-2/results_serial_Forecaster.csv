@@ -1,0 +1,14 @@
+Number_of_Forecasters,Execution Time (s)
+16,1.906083345413208
+Number_of_Forecasters,Execution Time (s)
+32,3.1993930339813232
+Number_of_Forecasters,Execution Time (s)
+64,5.776848077774048
+Number_of_Forecasters,Execution Time (s)
+128,10.734346866607666
+Number_of_Forecasters,Execution Time (s)
+256,20.830867767333984
+Number_of_Forecasters,Execution Time (s)
+512,40.956724643707275
+Number_of_Forecasters,Execution Time (s)
+1024,81.51932835578918

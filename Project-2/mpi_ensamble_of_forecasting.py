@@ -2,11 +2,19 @@ from mpi4py import MPI
 import jax
 import jax.numpy as jnp
 import numpy as np
+from numba import jit
+from numba import njit
+import time
+import csv
 
+
+#numba decorator
+@jax.jit
 def forecast_1step(X:jnp.array, W:jnp.array, b:jnp.array)->jnp.array:
     X_flatten = X.flatten()
     y_next = jnp.dot(W, X_flatten) + b
     return y_next
+
 
 def forecast(horizon:int, X:jnp.array, W:jnp.array, b:jnp.array)->jnp.array:
     result = []
@@ -42,6 +50,7 @@ def main():
     if rank == 0:
         print("MPI size:", size)
         print("Creation of dataset and model parameters")
+        start_time = time.time()
         X = jnp.array([[0.1, 0.4], [0.1, 0.5], [0.1, 0.6]])
         y = jnp.array([[0.1, 0.7]])
         W = jnp.array([[0., 1., 0., 1., 0., 1.], [0., 1., 0, 1., 0., 1.]])
@@ -57,7 +66,8 @@ def main():
 
     num_epochs = 1000
     horizon = 10
-    num_forecaster = 10
+    #128, 256, 512, 1024
+    num_forecaster = 1024
     noise_std = 0.1
 
     forecast_per_processor = num_forecaster // size
@@ -94,9 +104,20 @@ def main():
     comm.Gatherv(sendbuf=partial_prediction_np, recvbuf=(y_pred, counts, displacements, MPI.FLOAT), root=0)
 
     if rank == 0:
+        end_time = time.time()
         # y_pred = y_pred.reshape((num_forecaster, horizon))
         # print("Forecasted values:", y_pred)
         print("size of forecasted values:", y_pred.shape)
+        elapsed_time = end_time - start_time
+        print(f"Total time: {elapsed_time}  seconds")
+
+        #The rank 0 is in charge of the write on a CSV file containing the time statistics
+        #with open("results_128MPI_Forecaster.csv", mode="a", newline="") as file:
+        #    writer = csv.writer(file)
+        #   writer.writerow(["Number_of_Forecasters",  "Execution Time (s)"])
+        #    writer.writerow([num_forecaster, elapsed_time])
+        
+        
 
 if __name__ == "__main__":
     main()
