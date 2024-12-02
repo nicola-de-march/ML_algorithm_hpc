@@ -1,0 +1,122 @@
+2024-12-02 12:19:30.587412: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-12-02 12:19:30.587439: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-12-02 12:19:30.587427: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-12-02 12:19:30.587408: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-12-02 12:19:30.587642: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733138370.605047 4146071 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733138370.605087 4146068 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733138370.605089 4146070 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733138370.605151 4146069 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733138370.605278 4146067 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1733138370.610526 4146071 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+E0000 00:00:1733138370.610585 4146070 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+E0000 00:00:1733138370.610600 4146068 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+E0000 00:00:1733138370.610669 4146069 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+E0000 00:00:1733138370.610773 4146067 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2024-12-02 12:19:30.629485: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-12-02 12:19:30.629488: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-12-02 12:19:30.629494: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-12-02 12:19:30.629504: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-12-02 12:19:30.629528: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-12-02 12:19:30.651875: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-12-02 12:19:30.652071: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-12-02 12:19:30.652524: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-12-02 12:19:30.666612: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-12-02 12:19:30.666622: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733138370.669797 1400469 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733138370.669801 1400470 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733138370.670248 1400468 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1733138370.675368 1400469 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+E0000 00:00:1733138370.675372 1400470 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+E0000 00:00:1733138370.675739 1400468 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733138370.684310 1400471 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733138370.684354 1400472 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1733138370.689856 1400471 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+E0000 00:00:1733138370.689931 1400472 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2024-12-02 12:19:30.694606: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-12-02 12:19:30.694606: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-12-02 12:19:30.694603: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-12-02 12:19:30.708130: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-12-02 12:19:30.708170: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+image shape:  (28, 28)
+kernel shape:  (3, 3)
+learning_rate:  0.01
+num_iterations:  5
+Training start -----------------------------------------------------------------
+Iteration 0, Loss rank 8: 0.2032, Time per iteration: 4.4198
+Iteration 1, Loss rank 8: 0.2017, Time per iteration: 3.8040
+Iteration 2, Loss rank 8: 0.2003, Time per iteration: 3.9297
+Iteration 3, Loss rank 8: 0.1988, Time per iteration: 3.7947
+Iteration 4, Loss rank 8: 0.1974, Time per iteration: 3.9193
+Iteration 0, Loss rank 3: 0.2401, Time per iteration: 4.4328
+Iteration 1, Loss rank 3: 0.2379, Time per iteration: 3.7932
+Iteration 2, Loss rank 3: 0.2357, Time per iteration: 3.9302
+Iteration 3, Loss rank 3: 0.2336, Time per iteration: 3.7856
+Iteration 4, Loss rank 3: 0.2315, Time per iteration: 3.9275
+Iteration 0, Loss rank 6: 0.2484, Time per iteration: 4.4256
+Iteration 1, Loss rank 6: 0.2459, Time per iteration: 3.8038
+Iteration 2, Loss rank 6: 0.2436, Time per iteration: 3.9321
+Iteration 3, Loss rank 6: 0.2413, Time per iteration: 3.7908
+Iteration 4, Loss rank 6: 0.2390, Time per iteration: 3.9249
+Iteration 0, Loss rank 2: 0.2485, Time per iteration: 4.4288
+Iteration 1, Loss rank 2: 0.2463, Time per iteration: 3.8038
+Iteration 2, Loss rank 2: 0.2442, Time per iteration: 3.9319
+Iteration 3, Loss rank 2: 0.2421, Time per iteration: 3.7894
+Iteration 4, Loss rank 2: 0.2401, Time per iteration: 3.9240
+Iteration 0, Loss rank 1: 0.3087, Time per iteration: 4.4319
+Iteration 1, Loss rank 1: 0.3051, Time per iteration: 3.7971
+Iteration 2, Loss rank 1: 0.3015, Time per iteration: 3.9323
+Iteration 3, Loss rank 1: 0.2980, Time per iteration: 3.7890
+Iteration 4, Loss rank 1: 0.2946, Time per iteration: 3.9280
+Iteration 0, Loss rank 5: 0.2896, Time per iteration: 4.4319
+Iteration 1, Loss rank 5: 0.2864, Time per iteration: 3.7937
+Iteration 2, Loss rank 5: 0.2833, Time per iteration: 3.9341
+Iteration 3, Loss rank 5: 0.2802, Time per iteration: 3.7936
+Iteration 4, Loss rank 5: 0.2772, Time per iteration: 3.9264
+Iteration 0, Loss rank 4: 0.2689, Time per iteration: 4.4307
+Iteration 1, Loss rank 4: 0.2662, Time per iteration: 3.8052
+Iteration 2, Loss rank 4: 0.2636, Time per iteration: 3.9339
+Iteration 3, Loss rank 4: 0.2609, Time per iteration: 3.7876
+Iteration 4, Loss rank 4: 0.2584, Time per iteration: 3.9243
+Iteration 0, Loss rank 0: 0.2702, Time per iteration: 4.4329
+Iteration 1, Loss rank 0: 0.2672, Time per iteration: 3.8046
+Iteration 2, Loss rank 0: 0.2643, Time per iteration: 3.9327
+Iteration 3, Loss rank 0: 0.2615, Time per iteration: 3.7893
+Iteration 4, Loss rank 0: 0.2587, Time per iteration: 3.9233
+Iteration 0, Loss rank 7: 0.3190, Time per iteration: 4.4407
+Iteration 1, Loss rank 7: 0.3151, Time per iteration: 3.7977
+Iteration 2, Loss rank 7: 0.3112, Time per iteration: 3.9322
+Iteration 3, Loss rank 7: 0.3074, Time per iteration: 3.7897
+Iteration 4, Loss rank 7: 0.3037, Time per iteration: 3.9244
+Iteration 0, Loss rank 9: 0.2684, Time per iteration: 4.4404
+Iteration 1, Loss rank 9: 0.2657, Time per iteration: 3.7970
+Iteration 2, Loss rank 9: 0.2631, Time per iteration: 3.9340
+Iteration 3, Loss rank 9: 0.2605, Time per iteration: 3.7881
+Iteration 4, Loss rank 9: 0.2580, Time per iteration: 3.9257
+Training end -----------------------------------------------------------------
+Final kernel:  [[ 0.01922181  0.00875714  0.00519174]
+ [-0.9838925   0.0091468   0.9989476 ]
+ [ 0.00927504  0.00685463  0.00312058]]
+Final loss:  0.25867277
+
+Saving results...

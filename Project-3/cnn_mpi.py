@@ -1,18 +1,15 @@
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 from tensorflow.keras.datasets import mnist
 import jax
 import jax.numpy as jnp
 from jax import grad
 from mpi4py import MPI
-
+import sys
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
-
-print(f"Init process: {rank} of size {size}")
-
 
 # Define convolution function using JAX
 def convolution_2d(x, kernel):
@@ -66,10 +63,20 @@ loss_grad = grad(loss_fn)
 
 # Training loop
 learning_rate = 0.01
-num_iterations = 200
+num_iterations = 5
 
+if rank == 0:
+    print("image shape: ", x_local.shape)
+    print("kernel shape: ", kernel.shape)
+    print("learning_rate: ", learning_rate)
+    print("num_iterations: ", num_iterations)
+    print("Training start -----------------------------------------------------------------")
+
+sys.stdout.flush()
+comm.Barrier()
 losses = []
 for i in range(num_iterations):
+    start_time = MPI.Wtime()
     gradients_local = loss_grad(kernel, x_local, y_true_local)
     gradients_local = np.array(gradients_local)
     # Reduce gradients across all processes
@@ -83,48 +90,58 @@ for i in range(num_iterations):
     current_loss = loss_fn(kernel, x_local, y_true_local)
     losses.append(current_loss)
     # Print loss every 10 iterations
-    print(f"Iteration {i}, Loss rank {rank}: {current_loss:.4f}")
+    end_time = MPI.Wtime()
+    print(f"Iteration {i}, Loss rank {rank}: {current_loss:.4f}, Time per iteration: {end_time - start_time:.4f}")
+
+sys.stdout.flush()
+comm.Barrier()
 
 if rank == 0:
-    # Visualize results
-    # plt.figure(figsize=(8, 6))
+    print("Training end -----------------------------------------------------------------")
+    print("Final kernel: ", kernel)
+    print("Final loss: ", losses[-1])
+    print("\nSaving results...")
 
-    # # Plot loss over iterations
-    # plt.subplot(2, 2, 1)
-    # plt.plot(losses)
-    # plt.title("Loss Curve")
-    # plt.xlabel("Iteration")
-    # plt.ylabel("Loss")
-    # # plt.savefig('loss_curve.png')
+# Visualize results
+plt.figure(figsize=(8, 6))
 
-    # # Display original noisy image
-    # plt.subplot(2, 2, 2)
-    # plt.imshow(x, cmap='gray')
-    # plt.title("Noisy Image")
-    # plt.axis('off')
-    # # plt.savefig('noisy_image.png')
+# Plot loss over iterations
+plt.subplot(2, 2, 1)
+plt.plot(losses)
+plt.title("Loss Curve")
+plt.xlabel("Iteration")
+plt.ylabel("Loss")
+# plt.savefig('loss_curve.png')
 
-    # # Display target clean image
-    # plt.subplot(2, 2, 3)
-    # plt.imshow(y_true_local, cmap='gray')
-    # plt.title("Target (Clean Image)")
-    # plt.axis('off')
-    # # plt.savefig('clean_image.png')
+# Display original noisy image
+plt.subplot(2, 2, 2)
+plt.imshow(x_local, cmap='gray')
+plt.title("Noisy Image")
+plt.axis('off')
+# plt.savefig('noisy_image.png')
 
-    # # Display denoised image
-    # y_denoised = convolution_2d(x, kernel)
-    # plt.subplot(2, 2, 4)
-    # plt.imshow(y_denoised, cmap='gray')
-    # plt.title("Denoised Image")
-    # plt.axis('off')
-    # # plt.savefig('denoised_image.png')
+# Display target clean image
+plt.subplot(2, 2, 3)
+plt.imshow(y_true_local, cmap='gray')
+plt.title("Target (Clean Image)")
+plt.axis('off')
+# plt.savefig('clean_image.png')
 
-    # plt.tight_layout()
-    # plt.savefig('results.png')
-    # plt.show()
+# Display denoised image
+y_denoised = convolution_2d(x_local, kernel)
+plt.subplot(2, 2, 4)
+plt.imshow(y_denoised, cmap='gray')
+plt.title("Denoised Image")
+plt.axis('off')
+# plt.savefig('denoised_image.png')
 
-    print("Training end")
+plt.tight_layout()
+plt.savefig('results.png')
+plt.show()
 
-
+sys.stdout.flush()
+comm.Barrier()
+if rank == 0:
+    print("Results saved successfully!")
 
 
