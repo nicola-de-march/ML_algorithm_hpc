@@ -4,11 +4,15 @@ from tensorflow.keras.datasets import mnist
 import jax
 import jax.numpy as jnp
 from jax import grad
-import mpi4py as MPI
+from mpi4py import MPI
+
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 size = comm.Get_size()
+
+print(f"Init process: {rank} of size {size}")
+
 
 # Define convolution function using JAX
 def convolution_2d(x, kernel):
@@ -51,7 +55,7 @@ for _ in range(num_corrupted_pixels):
 
 # Normalize images
 y_true_local = y_true_local.astype(np.float32) / 255.0
-x = x_local.astype(np.float32) / 255.0
+x_local = x_local.astype(np.float32) / 255.0
 
 kernel = jnp.array([[0.01, 0.0, 0.0],
                     [-1.0, 0.0, 1.0],
@@ -61,29 +65,25 @@ kernel = jnp.array([[0.01, 0.0, 0.0],
 loss_grad = grad(loss_fn)
 
 # Training loop
-learning_rate = 0.05
+learning_rate = 0.01
 num_iterations = 200
 
 losses = []
 for i in range(num_iterations):
-    gradients_local = loss_grad(kernel, x, y_true_local)
-    # Send gradient to rank 0
+    gradients_local = loss_grad(kernel, x_local, y_true_local)
     gradients_local = np.array(gradients_local)
-    gradients = comm.reduce(gradients_local, op=MPI.SUM, root=0)
-    
-    if rank == 0:
-        kernel -= learning_rate * gradients
-
-    kernel = comm.bcast(kernel, root=0)
-    kernel = jnp.array(kernel)
-    # send kernel to the different process
+    # Reduce gradients across all processes
+    gradients = np.zeros_like(gradients_local)
+    comm.Allreduce(gradients_local, gradients, op=MPI.SUM)
+    # Average gradients
+    gradients_avg = gradients / size
+    # Update kernel with averaged gradients
+    kernel -= learning_rate * gradients_avg
     # Compute and store the loss
     current_loss = loss_fn(kernel, x_local, y_true_local)
     losses.append(current_loss)
-
     # Print loss every 10 iterations
-    if rank == 0:
-        print(f"Iteration {i}, Local Loss rank 0: {current_loss:.4f}")
+    print(f"Iteration {i}, Loss rank {rank}: {current_loss:.4f}")
 
 if rank == 0:
     # Visualize results
