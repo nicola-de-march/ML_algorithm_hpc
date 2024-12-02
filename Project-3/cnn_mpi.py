@@ -6,6 +6,10 @@ import jax.numpy as jnp
 from jax import grad
 from mpi4py import MPI
 import sys
+from functools import reduce
+
+def reduce_array(arr):
+    return reduce(lambda x, y: x + y, arr)
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
@@ -41,14 +45,23 @@ def loss_fn(kernel, x, y_true):
 # -------------------------------------------------------------------------------
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
-x_local = x_train[rank]
+tot_image = 10
+chunck_size = int(tot_image / size)
+if rank == 0:
+    print("chunck_size:  " + str(chunck_size))
+x_local = x_train[(rank*chunck_size) : (rank*chunck_size + chunck_size)]
+
+
+
 y_true_local = x_local.copy()
 
 # Add salt-and-pepper noise
 num_corrupted_pixels = 100
-for _ in range(num_corrupted_pixels):
-    i, j = np.random.randint(0, x_local.shape[0]), np.random.randint(0, x_local.shape[1])
-    x_local[i, j] = np.random.choice([0, 255])
+rand_i = x_local[0].shape[0]; rand_j = x_local[0].shape[1]
+for x in x_local:
+    for _ in range(num_corrupted_pixels):
+        i, j = np.random.randint(0, rand_i), np.random.randint(0, rand_j)
+        x[i, j] = np.random.choice([0, 255])
 
 # Normalize images
 y_true_local = y_true_local.astype(np.float32) / 255.0
@@ -63,7 +76,7 @@ loss_grad = grad(loss_fn)
 
 # Training loop
 learning_rate = 0.01
-num_iterations = 5
+num_iterations = 1
 
 if rank == 0:
     print("image shape: ", x_local.shape)
@@ -75,23 +88,24 @@ if rank == 0:
 sys.stdout.flush()
 comm.Barrier()
 losses = []
-for i in range(num_iterations):
-    start_time = MPI.Wtime()
-    gradients_local = loss_grad(kernel, x_local, y_true_local)
-    gradients_local = np.array(gradients_local)
-    # Reduce gradients across all processes
-    gradients = np.zeros_like(gradients_local)
-    comm.Allreduce(gradients_local, gradients, op=MPI.SUM)
-    # Average gradients
-    gradients_avg = gradients / size
-    # Update kernel with averaged gradients
-    kernel -= learning_rate * gradients_avg
-    # Compute and store the loss
-    current_loss = loss_fn(kernel, x_local, y_true_local)
-    losses.append(current_loss)
-    # Print loss every 10 iterations
-    end_time = MPI.Wtime()
-    print(f"Iteration {i}, Loss rank {rank}: {current_loss:.4f}, Time per iteration: {end_time - start_time:.4f}")
+
+for x, y in zip(x_local, y_true_local):
+    for i in range(num_iterations):
+        start_time = MPI.Wtime()
+        gradients_local = loss_grad(kernel, x, y)
+        gradients_local = np.array(gradients_local)
+        gradients = np.zeros_like(gradients_local)
+        comm.Allreduce(gradients_local, gradients, op=MPI.SUM)
+        # Average gradients
+        gradients_avg = gradients / size
+        # Update kernel with averaged gradients
+        kernel -= learning_rate * gradients_avg
+        # Compute and store the loss
+        current_loss = loss_fn(kernel, x, y)
+        losses.append(current_loss)
+        # Print loss every 10 iterations
+        end_time = MPI.Wtime()
+        print(f"Iteration {i}, Loss rank {rank}: {current_loss:.4f}, Time per iteration: {end_time - start_time:.4f}")
 
 sys.stdout.flush()
 comm.Barrier()
@@ -136,7 +150,7 @@ plt.axis('off')
 # plt.savefig('denoised_image.png')
 
 plt.tight_layout()
-plt.savefig('results.png')
+plt.savefig(f'results/results_{rank}.png')
 plt.show()
 
 sys.stdout.flush()

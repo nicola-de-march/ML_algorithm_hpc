@@ -10,4 +10,4 @@
 #SBATCH --mail-user=nicola.demarch.001@student.uni.lu
 
 conda activate Project-3
-mpiexec -n 10 python cnn_mpi.py
+mpiexec -n 50 python cnn_mpi.py

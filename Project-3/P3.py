@@ -4,18 +4,25 @@ from tensorflow.keras.datasets import mnist
 import jax
 import jax.numpy as jnp
 from jax import grad
+from functools import reduce
+import time
+
+def reduce_array(arr):
+    return reduce(lambda x, y: x + y, arr)
 
 # Load the MNIST dataset
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-x = x_train[0]
+x = x_train[0:10]
 y_true = x.copy()
 
 # Add salt-and-pepper noise
 num_corrupted_pixels = 100
-for _ in range(num_corrupted_pixels):
-    i, j = np.random.randint(0, x.shape[0]), np.random.randint(0, x.shape[1])
-    x[i, j] = np.random.choice([0, 255])
+rand_i = x[0].shape[0]; rand_j = x[0].shape[1]
+for x_img in x:
+    for _ in range(num_corrupted_pixels):
+        i, j = np.random.randint(0, rand_i), np.random.randint(0, rand_j)
+        x_img[i, j] = np.random.choice([0, 255])
 
 # Normalize images
 y_true = y_true.astype(np.float32) / 255.0
@@ -63,51 +70,54 @@ learning_rate = 0.01
 num_iterations = 200
 
 losses = []
-for i in range(num_iterations):
-    gradients = loss_grad(kernel, x, y_true)
-    kernel -= learning_rate * gradients  # Update kernel with gradient descent
+tot_time_start = time.time()
+for x, y in zip(x, y_true):
+    for i in range(num_iterations):
+        gradients = loss_grad(kernel, x, y_true)
+        #gradients = reduce(gradients)
+        kernel -= learning_rate * gradients  # Update kernel with gradient descent
 
-    # Compute and store the loss
-    current_loss = loss_fn(kernel, x, y_true)
-    losses.append(current_loss)
+        # Compute and store the loss
+        current_loss = loss_fn(kernel, x, y_true)
+        losses.append(current_loss)
 
-    # Print loss every 10 iterations
-    if i % 10 == 0:
-        print(f"Iteration {i}, Loss: {current_loss:.4f}")
+        # Print loss every 10 iterations
+        if i % 10 == 0:
+            print(f"Iteration {i}, Loss: {current_loss:.4f}")
 
-# Visualize results
-plt.figure(figsize=(8, 6))
+# # Visualize results
+# plt.figure(figsize=(8, 6))
 
-# Plot loss over iterations
-plt.subplot(2, 2, 1)
-plt.plot(losses)
-plt.title("Loss Curve")
-plt.xlabel("Iteration")
-plt.ylabel("Loss")
-# plt.savefig('loss_curve.png')
+# # Plot loss over iterations
+# plt.subplot(2, 2, 1)
+# plt.plot(losses)
+# plt.title("Loss Curve")
+# plt.xlabel("Iteration")
+# plt.ylabel("Loss")
+# # plt.savefig('loss_curve.png')
 
-# Display original noisy image
-plt.subplot(2, 2, 2)
-plt.imshow(x, cmap='gray')
-plt.title("Noisy Image")
-plt.axis('off')
-# plt.savefig('noisy_image.png')
+# # Display original noisy image
+# plt.subplot(2, 2, 2)
+# plt.imshow(x, cmap='gray')
+# plt.title("Noisy Image")
+# plt.axis('off')
+# # plt.savefig('noisy_image.png')
 
-# Display target clean image
-plt.subplot(2, 2, 3)
-plt.imshow(y_true, cmap='gray')
-plt.title("Target (Clean Image)")
-plt.axis('off')
-# plt.savefig('clean_image.png')
+# # Display target clean image
+# plt.subplot(2, 2, 3)
+# plt.imshow(y_true, cmap='gray')
+# plt.title("Target (Clean Image)")
+# plt.axis('off')
+# # plt.savefig('clean_image.png')
 
-# Display denoised image
-y_denoised = convolution_2d(x, kernel)
-plt.subplot(2, 2, 4)
-plt.imshow(y_denoised, cmap='gray')
-plt.title("Denoised Image")
-plt.axis('off')
-# plt.savefig('denoised_image.png')
+# # Display denoised image
+# y_denoised = convolution_2d(x, kernel)
+# plt.subplot(2, 2, 4)
+# plt.imshow(y_denoised, cmap='gray')
+# plt.title("Denoised Image")
+# plt.axis('off')
+# # plt.savefig('denoised_image.png')
 
-plt.tight_layout()
-plt.savefig('results.png')
-plt.show()
+# plt.tight_layout()
+# plt.savefig('results.png')
+# plt.show()
