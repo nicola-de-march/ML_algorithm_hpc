@@ -6,10 +6,6 @@ import jax.numpy as jnp
 from jax import grad
 from mpi4py import MPI
 import sys
-from functools import reduce
-
-def reduce_array(arr):
-    return reduce(lambda x, y: x + y, arr)
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
@@ -45,13 +41,15 @@ def loss_fn(kernel, x, y_true):
 # -------------------------------------------------------------------------------
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
-tot_image = 10
-chunck_size = int(tot_image / size)
+
+if(len(sys.argv) < 2):
+    error("Usage: python3 P3.py <N_IMAGES>")
+    
+N_IMAGES = int(sys.argv[1])
+chunck_size = int(N_IMAGES / size)
 if rank == 0:
     print("chunck_size:  " + str(chunck_size))
 x_local = x_train[(rank*chunck_size) : (rank*chunck_size + chunck_size)]
-
-
 
 y_true_local = x_local.copy()
 
@@ -76,7 +74,7 @@ loss_grad = grad(loss_fn)
 
 # Training loop
 learning_rate = 0.01
-num_iterations = 1
+num_iterations = 200
 
 if rank == 0:
     print("image shape: ", x_local.shape)
@@ -88,6 +86,9 @@ if rank == 0:
 sys.stdout.flush()
 comm.Barrier()
 losses = []
+
+time_iter = 0
+tot_time_start = MPI.Wtime()
 
 for x, y in zip(x_local, y_true_local):
     for i in range(num_iterations):
@@ -106,6 +107,8 @@ for x, y in zip(x_local, y_true_local):
         # Print loss every 10 iterations
         end_time = MPI.Wtime()
         print(f"Iteration {i}, Loss rank {rank}: {current_loss:.4f}, Time per iteration: {end_time - start_time:.4f}")
+        time_iter += end_time - start_time
+tot_time = MPI.Wtime() - tot_time_start
 
 sys.stdout.flush()
 comm.Barrier()
@@ -114,44 +117,47 @@ if rank == 0:
     print("Training end -----------------------------------------------------------------")
     print("Final kernel: ", kernel)
     print("Final loss: ", losses[-1])
+    print(f"Total training time: {tot_time} [s]")
     print("\nSaving results...")
+    f = open("time_analysis_mpi.csv", "a")
+    f.write(f"mpi, {size}, {N_IMAGES}, {num_iterations}, {tot_time}, {time_iter/(num_iterations)}\n")
+    f.close()
+# # Visualize results
+# plt.figure(figsize=(8, 6))
 
-# Visualize results
-plt.figure(figsize=(8, 6))
+# # Plot loss over iterations
+# plt.subplot(2, 2, 1)
+# plt.plot(losses)
+# plt.title("Loss Curve")
+# plt.xlabel("Iteration")
+# plt.ylabel("Loss")
+# # plt.savefig('loss_curve.png')
 
-# Plot loss over iterations
-plt.subplot(2, 2, 1)
-plt.plot(losses)
-plt.title("Loss Curve")
-plt.xlabel("Iteration")
-plt.ylabel("Loss")
-# plt.savefig('loss_curve.png')
+# # Display original noisy image
+# plt.subplot(2, 2, 2)
+# plt.imshow(x_local, cmap='gray')
+# plt.title("Noisy Image")
+# plt.axis('off')
+# # plt.savefig('noisy_image.png')
 
-# Display original noisy image
-plt.subplot(2, 2, 2)
-plt.imshow(x_local, cmap='gray')
-plt.title("Noisy Image")
-plt.axis('off')
-# plt.savefig('noisy_image.png')
+# # Display target clean image
+# plt.subplot(2, 2, 3)
+# plt.imshow(y_true_local, cmap='gray')
+# plt.title("Target (Clean Image)")
+# plt.axis('off')
+# # plt.savefig('clean_image.png')
 
-# Display target clean image
-plt.subplot(2, 2, 3)
-plt.imshow(y_true_local, cmap='gray')
-plt.title("Target (Clean Image)")
-plt.axis('off')
-# plt.savefig('clean_image.png')
+# # Display denoised image
+# y_denoised = convolution_2d(x_local, kernel)
+# plt.subplot(2, 2, 4)
+# plt.imshow(y_denoised, cmap='gray')
+# plt.title("Denoised Image")
+# plt.axis('off')
+# # plt.savefig('denoised_image.png')
 
-# Display denoised image
-y_denoised = convolution_2d(x_local, kernel)
-plt.subplot(2, 2, 4)
-plt.imshow(y_denoised, cmap='gray')
-plt.title("Denoised Image")
-plt.axis('off')
-# plt.savefig('denoised_image.png')
-
-plt.tight_layout()
-plt.savefig(f'results/results_{rank}.png')
-plt.show()
+# plt.tight_layout()
+# plt.savefig(f'results/results_{rank}.png')
+# plt.show()
 
 sys.stdout.flush()
 comm.Barrier()

@@ -6,14 +6,16 @@ import jax.numpy as jnp
 from jax import grad
 from functools import reduce
 import time
-
-def reduce_array(arr):
-    return reduce(lambda x, y: x + y, arr)
+import sys
 
 # Load the MNIST dataset
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-x = x_train[0:10]
+if(len(sys.argv) < 2):
+    error("Usage: python3 P3.py <N_IMAGES>")
+N_IMAGES = int(sys.argv[1])
+
+x = x_train[0:N_IMAGES]
 y_true = x.copy()
 
 # Add salt-and-pepper noise
@@ -67,14 +69,15 @@ loss_grad = grad(loss_fn)
 
 # Training loop
 learning_rate = 0.01
-num_iterations = 200
+num_iterations = 20
 
 losses = []
 tot_time_start = time.time()
+time_iter = 0
 for x, y in zip(x, y_true):
+    tmp = time.time()
     for i in range(num_iterations):
-        gradients = loss_grad(kernel, x, y_true)
-        #gradients = reduce(gradients)
+        gradients = loss_grad(kernel, x, y_true)  # Compute gradient
         kernel -= learning_rate * gradients  # Update kernel with gradient descent
 
         # Compute and store the loss
@@ -84,6 +87,12 @@ for x, y in zip(x, y_true):
         # Print loss every 10 iterations
         if i % 10 == 0:
             print(f"Iteration {i}, Loss: {current_loss:.4f}")
+    time_iter += time.time() - tmp
+tot_time = time.time() - tot_time_start
+print(f"Total time: {tot_time:.2f} [s]")
+f = open("time_analysis_serial.csv", "a")
+f.write(f"serial, 1, {N_IMAGES}, {num_iterations}, {tot_time}, {time_iter/num_iterations}\n")
+f.close()
 
 # # Visualize results
 # plt.figure(figsize=(8, 6))

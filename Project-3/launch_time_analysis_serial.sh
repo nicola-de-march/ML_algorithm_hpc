@@ -11,7 +11,7 @@
 
 conda activate Project-3
 
-for input in 5 10 15 20 25
+for input in 5 10 
 do
   echo "Running serial version with input $input"
   python P3.py $input

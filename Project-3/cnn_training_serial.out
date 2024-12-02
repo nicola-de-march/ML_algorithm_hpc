@@ -1,0 +1,46 @@
+Running serial version with input 5
+2024-12-02 20:59:10.146958: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733169550.164494 3863902 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1733169550.171017 3863902 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2024-12-02 20:59:10.188462: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Iteration 0, Loss: 0.2595
+Iteration 10, Loss: 0.2468
+Iteration 0, Loss: 0.2625
+Iteration 10, Loss: 0.2496
+Iteration 0, Loss: 0.2368
+Iteration 10, Loss: 0.2295
+Iteration 0, Loss: 0.2126
+Iteration 10, Loss: 0.2066
+Iteration 0, Loss: 0.2021
+Iteration 10, Loss: 0.1966
+Total time: 392.33 [s]
+Running serial version with input 10
+2024-12-02 21:05:45.563821: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:477] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+E0000 00:00:1733169945.581053 3875029 cuda_dnn.cc:8310] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+E0000 00:00:1733169945.586392 3875029 cuda_blas.cc:1418] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2024-12-02 21:05:45.603736: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+Iteration 0, Loss: 0.2717
+Iteration 10, Loss: 0.2580
+Iteration 0, Loss: 0.2569
+Iteration 10, Loss: 0.2455
+Iteration 0, Loss: 0.2119
+Iteration 10, Loss: 0.2068
+Iteration 0, Loss: 0.2208
+Iteration 10, Loss: 0.2147
+Iteration 0, Loss: 0.2201
+Iteration 10, Loss: 0.2131
+Iteration 0, Loss: 0.1898
+Iteration 10, Loss: 0.1848
+Iteration 0, Loss: 0.1601
+Iteration 10, Loss: 0.1571
+Iteration 0, Loss: 0.1680
+Iteration 10, Loss: 0.1643
+Iteration 0, Loss: 0.1516
+Iteration 10, Loss: 0.1489
+Iteration 0, Loss: 0.1675
+Iteration 10, Loss: 0.1636
+Total time: 771.94 [s]
